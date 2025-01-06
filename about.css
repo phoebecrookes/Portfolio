@@ -1,0 +1,179 @@
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin-left: 50px;
+  margin-right: 50px;
+  padding-bottom: 30px;
+}
+.instagram-link {
+  color: blue; /* Instagram purple color */
+ /* Remove underline */
+}
+
+.instagram-link:hover {
+  color: pink; /* Instagram pink color */
+ /* Add underline on hover */
+}
+a {
+  color: black; /* Links are blue by default */
+  text-decoration: none; /* No underline by default */
+}
+a:hover {
+  color: pink; /* Change color to red when hovered */
+}
+a:visited {
+  color: black; /* Change the color to purple (you can choose any color) */
+}
+.header2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 8px;
+  
+}
+.about {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 100px;
+}
+/* Ensure iframe (videos) fit like images */
+/* Ensure iframe (videos) occupy two columns */
+
+
+
+/* Container for the items */
+.container {
+  display: flex;
+  justify-content: space-between; /* Space the headers to the far left and right */
+  align-items: center;
+  width: 100%; /* Full viewport width */
+  margin-bottom: 150px;
+}
+
+/* Individual item within the container */
+.item {
+  text-align: left;
+  margin-top: 0px;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Header style */
+h2 {
+  font-family: "swear-display", serif;
+  font-weight: 500;
+  font-style: italic;
+  color: black;
+  font-size: 30px;
+  margin-bottom: 0px;
+}
+
+h3 {
+  font-family: "input-mono", monospace;
+  font-weight: 200;
+  font-style: normal;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Paragraph styling */
+p, p2 {
+  font-family: "input-mono", monospace;
+  font-weight: 100;
+  font-style: normal;
+  margin: 0;
+  font-size: 13px;
+}
+
+/* Updated Image Gallery Layout */
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  margin-top: 60px;
+  max-width: 100vw; /* Increased width for columns */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Each project as a row */
+.image-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two wider columns */
+  gap: 30px; /* Increased space between images */
+  width: 100%;
+  align-items: center;
+}
+
+/* Image styling */
+.image-item img, .image-item iframe {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Caption styling */
+.caption {
+  grid-column: span 2;
+  font-size: 14px;
+  color: #555;
+  margin-top: -10px;
+  text-align: left;
+}
+
+/* Hidden image on hover */
+.hidden-image {
+  display: none; /* Hide by default */
+  width: 350px;
+  height: auto;
+  position: absolute;
+  top: 70px;
+  left: 80px;
+  z-index: 1;
+  border: 2px solid black;
+}
+
+/* Show image when hovering over the header */
+.header:hover + .hidden-image {
+  display: block;
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  p, p2 {
+    font-size: 14px;
+  }
+
+  .image-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .image-item {
+    grid-template-columns: 1fr; /* Stack images vertically */
+    gap: 10px;
+  }
+
+  .caption {
+    grid-column: span 1;
+  }
+}
