@@ -7,6 +7,7 @@ body {
   margin-left: 50px;
   margin-right: 50px;
   padding-bottom: 30px;
+  
 }
 
 /* Container for the items */
@@ -47,6 +48,7 @@ h2 {
   font-size: 30px;
   margin-bottom: 0px;
    color: black;
+   
 }
 
 h3 {
@@ -55,6 +57,7 @@ h3 {
   font-style: normal;
   margin: 0;
   font-size: 14px;
+  background-color: pink;
 }
 
 /* Paragraph styling */
@@ -64,7 +67,7 @@ p, p2 {
   font-style: normal;
   margin: 0;
   font-size: 13px;
- 
+  background-color: rgb(244, 255, 150);
 }
 
 /* Updated Image Gallery Layout */
@@ -107,22 +110,7 @@ p, p2 {
 }
 
 
-/* Hidden image on hover */
-.hidden-image {
-  display: none; /* Hide by default */
-  width: 350px;
-  height: auto;
-  position: absolute;
-  top: 70px;
-  left: 80px;
-  z-index: 1;
-  border: 2px solid black;
-}
 
-/* Show image when hovering over the header */
-.header:hover + .hidden-image {
-  display: block;
-}
 
 /* Media Queries for Mobile Devices */
 @media (max-width: 768px) {
@@ -171,6 +159,5 @@ p, p2 {
 
 .sublime{
   margin: auto;
-  height 50
+  height: 50;
 }
-
