@@ -89,6 +89,7 @@ p, p2 {
   font-style: normal;
   margin: 0;
   font-size: 13px;
+   background-color: rgb(244, 255, 150);
 }
 
 /* Updated Image Gallery Layout */
@@ -127,22 +128,6 @@ p, p2 {
   text-align: left;
 }
 
-/* Hidden image on hover */
-.hidden-image {
-  display: none; /* Hide by default */
-  width: 350px;
-  height: auto;
-  position: absolute;
-  top: 70px;
-  left: 80px;
-  z-index: 1;
-  border: 2px solid black;
-}
-
-/* Show image when hovering over the header */
-.header:hover + .hidden-image {
-  display: block;
-}
 
 /* Media Queries for Mobile Devices */
 @media (max-width: 768px) {
