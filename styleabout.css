@@ -1,0 +1,250 @@
+/* About page only */
+
+@font-face {
+  font-family: "Blocus";
+  src: url("blocuswebfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --font-family-heading: "input-sans", sans-serif;
+  --font-family-body: "input-sans", sans-serif;
+  --font-family-site-title: "Blocus", sans-serif;
+  /* ↓ Page margins — keep in sync with style.css */
+  --page-padding-y: clamp(8px, 2vw, 16px);
+  --page-padding-x: clamp(10px, 2.5vw, 24px);
+  --text-column-width: 360px;
+  --layout-column-gap: 450px;
+  --gallery-height-offset: 45px;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+  font-family: var(--font-family-body);
+  font-weight: inherit;
+  font-synthesis: weight;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+  font-family: var(--font-family-body);
+  font-weight: 100;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #111;
+  background-color: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.page {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  padding: var(--page-padding-y) var(--page-padding-x);
+  overflow-x: hidden;
+}
+
+body.about-page,
+body.about-page .page {
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, var(--text-column-width)) minmax(0, 1fr);
+  gap: var(--layout-column-gap);
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+body.about-page .layout {
+  height: 100%;
+}
+
+.left {
+  position: sticky;
+  top: 0;
+  min-width: 0;
+  overflow-wrap: break-word;
+  z-index: 2;
+  max-height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y));
+  overflow-y: auto;
+}
+
+.project-content {
+  min-width: 0;
+  z-index: 2;
+  padding-top: 8px;
+  position: relative;
+}
+
+.project-gallery {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
+  height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
+  max-height: calc(100vh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
+  max-height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
+}
+
+.project-gallery .gallery-cell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.project-gallery img,
+.project-gallery video {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: right top;
+  pointer-events: none;
+}
+
+body.about-page .project-gallery .gallery-cell {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.about-page .project-gallery .gallery-cell img,
+body.about-page .project-gallery .gallery-cell video {
+  pointer-events: none;
+}
+
+.image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.image-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image-overlay img,
+.image-overlay video,
+.image-overlay iframe {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  opacity: 0.7;
+  border: 0;
+}
+
+.image-overlay video,
+.image-overlay iframe {
+  display: none;
+}
+
+body.about-page .left {
+  background-color: #ffffff;
+}
+
+.site-header {
+  margin-bottom: 8px;
+}
+
+.site-header p {
+  margin: 0.75em 0 0;
+  max-width: 100%;
+  background-color: #ffffff;
+  padding: 2px 4px;
+  display: inline-block;
+  box-decoration-break: clone;
+}
+
+.site-title {
+  font-family: var(--font-family-site-title);
+  font-weight: 600;
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  background-color: #ffffff;
+  padding: 2px 4px;
+  display: inline-block;
+  box-decoration-break: clone;
+}
+
+.site-meta {
+  font-family: var(--font-family-heading);
+  font-size: 13px;
+  margin-top: 4px;
+  background-color: #ffffff;
+  padding: 2px 4px;
+  display: inline-block;
+  box-decoration-break: clone;
+}
+
+.about {
+  font-size: 13px;
+  max-width: 100%;
+}
+
+.about h1 {
+  font-size: 13px;
+  font-weight: 400;
+  margin: 0 0 0em;
+}
+
+.about h1:not(:first-child) {
+  margin-top: 1.5em;
+}
+
+.about p {
+  margin: 0 0 0.75em;
+}
+
+.about p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 12px;
+  }
+}

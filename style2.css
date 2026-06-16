@@ -1,0 +1,29 @@
+.project-detail {
+  max-width: 880px;
+}
+
+.project-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 0px;
+}
+
+.project-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  background: #ddd;
+}
+.h1 {
+  font-size: 15px;
+}
+.project-text {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.project-text p {
+  margin: 0 0 13px;
+}
