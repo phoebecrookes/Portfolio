@@ -218,6 +218,19 @@ body.home .project-meta {
   margin-top: 20px;
 }
 
+.mobile-project-nav {
+  display: none;
+}
+
+.mobile-project-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mobile-project-nav a:hover {
+  text-decoration: underline;
+}
+
 /* Text highlight: white background only behind text (readable over overlay image) */
 .left > p,
 .project-page .about h1,
@@ -577,18 +590,59 @@ body.project-page .layout {
   }
 
   body.project-page .project-gallery {
-    height: 55dvh;
-    min-height: 260px;
-    max-height: none;
+    height: auto;
+    min-height: 200px;
   }
 
   body.project-page .project-gallery .gallery-cell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
     justify-content: center;
+    container-type: normal;
+  }
+
+  body.project-page .project-gallery .gallery-cell.current {
+    position: relative;
+    height: auto;
   }
 
   body.project-page .project-gallery .gallery-cell img,
   body.project-page .project-gallery .gallery-cell video {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    object-fit: contain;
     object-position: center top;
+  }
+
+  body.project-page .project-gallery .gallery-vimeo {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    align-self: stretch;
+  }
+
+  body.project-page .about p:last-of-type {
+    display: none;
+  }
+
+  body.project-page .mobile-project-nav {
+    display: block;
+    margin-top: 24px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  body.project-page .mobile-project-nav a {
+    display: inline-block;
+    margin: 0 0 0.5em;
+    background-color: #ffffff;
+    padding: 2px 4px;
   }
 }
 
