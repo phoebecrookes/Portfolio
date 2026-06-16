@@ -250,20 +250,10 @@ body.home .project-meta {
   max-width: var(--project-card-max-width);
 }
 
-.project-card:hover .project-image-wrap {
-  transform: translateY(-2px);
-}
-
-.project-card:hover img {
-  filter: grayscale(0);
-}
-
 .project-image-wrap {
   overflow: hidden;
   border-radius: 0px;
   background: #ddd;
-  transform: translateY(0);
-  transition: transform 150ms ease-out;
   min-width: 0;
 }
 
@@ -272,8 +262,6 @@ body.home .project-meta {
   width: 100%;
   max-width: 100%;
   height: auto;
-  filter: grayscale(0.15);
-  transition: filter 150ms ease-out;
   object-fit: cover;
 }
 
@@ -417,6 +405,39 @@ body.project-page .gallery-caption-display {
   pointer-events: none;
 }
 
+body.project-page .gallery-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transform: translateX(-100%);
+  pointer-events: auto;
+}
+
+body.project-page .gallery-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 2px 4px;
+  border: 0;
+  background-color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+
+body.project-page .gallery-nav button svg {
+  display: block;
+}
+
+body.project-page .gallery-nav-prev svg {
+  transform: scaleX(-1);
+}
+
 body.project-page .project-gallery {
   position: relative;
   width: 100%;
@@ -460,7 +481,7 @@ body.project-page .project-gallery .gallery-cell {
 body.project-page .project-gallery .gallery-cell.current {
   opacity: 1;
   pointer-events: auto;
-  cursor: url("cursor-arrow.svg") 4 12, pointer;
+  cursor: default;
 }
 
 body.project-page .project-gallery .gallery-cell img,
@@ -503,7 +524,7 @@ body.project-page .project-gallery .gallery-cell.current .gallery-vimeo iframe {
 body.project-page .project-gallery .gallery-cell.current img,
 body.project-page .project-gallery .gallery-cell.current video,
 body.project-page .project-gallery .gallery-cell.current .gallery-vimeo {
-  cursor: url("cursor-arrow.svg") 4 12, pointer;
+  cursor: default;
 }
 
 /* Align project-content top with left column header */
