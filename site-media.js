@@ -232,6 +232,17 @@
     var CURSOR_PREV = 'url("cursor-arrow-left.svg") 42 18, pointer';
     var navigationLock = false;
 
+    if (isProjectPage && projectContent && !projectContent.querySelector('.mobile-project-nav')) {
+      var mobileNav = document.createElement('nav');
+      mobileNav.className = 'mobile-project-nav';
+      mobileNav.setAttribute('aria-label', 'Site navigation');
+      mobileNav.innerHTML =
+        '<a href="about.html">About</a>' +
+        '<a href="mailto:crookesphoebe@gmail.com">Contact</a>' +
+        '<a href="index.html">&larr; Back to all projects</a>';
+      projectContent.appendChild(mobileNav);
+    }
+
     function getCurrentIndex() {
       var current = gallery.querySelector('.gallery-cell.current');
       return Array.prototype.indexOf.call(cells, current);
