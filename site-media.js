@@ -161,7 +161,9 @@
         } else {
           hideAll();
           img.style.display = 'block';
-          img.src = item.src;
+          if (img.src !== item.src) {
+            img.src = item.src;
+          }
           img.alt = item.alt || '';
         }
       },
@@ -228,6 +230,7 @@
     var canNavigate = isProjectPage && cells.length > 1;
     var CURSOR_NEXT = 'url("cursor-arrow.svg") 6 18, pointer';
     var CURSOR_PREV = 'url("cursor-arrow-left.svg") 42 18, pointer';
+    var navigationLock = false;
 
     function getCurrentIndex() {
       var current = gallery.querySelector('.gallery-cell.current');
@@ -323,6 +326,7 @@
     gallery.querySelectorAll('img, video, .gallery-vimeo').forEach(bindMediaReady);
 
     window.addEventListener('resize', positionGalleryChrome);
+    window.addEventListener('scroll', positionGalleryChrome, { passive: true });
 
     cells[0].classList.add('current');
     syncCellMedia(cells);
@@ -378,6 +382,7 @@
 
         media.addEventListener('mouseenter', showOverlayWithCurrent);
         media.addEventListener('mouseleave', function() {
+          if (navigationLock) return;
           hideOverlay();
           media.style.cursor = '';
         });
@@ -406,15 +411,30 @@
     function goToIndex(idx) {
       var current = gallery.querySelector('.gallery-cell.current');
       if (!current || !cells[idx]) return;
+
+      var keepOverlay = overlay.classList.contains('is-visible');
+      navigationLock = true;
+
       current.classList.remove('current');
       cells[idx].classList.add('current');
       syncCellMedia(cells);
       updateCaption();
       bindCurrentMediaInteraction();
-      var media = cells[idx].querySelector('img, video, .gallery-vimeo');
-      if (media && media.matches(':hover')) {
+
+      if (keepOverlay) {
         showOverlayWithCurrent();
+      } else {
+        requestAnimationFrame(function() {
+          var media = cells[idx].querySelector('img, video, .gallery-vimeo');
+          if (media && media.matches(':hover')) {
+            showOverlayWithCurrent();
+          }
+        });
       }
+
+      requestAnimationFrame(function() {
+        navigationLock = false;
+      });
     }
 
     bindCurrentMediaInteraction();
