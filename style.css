@@ -164,9 +164,14 @@ body.home .project-meta {
   margin-bottom: 24px;
 }
 
-/* ↓ Project pages: align project title/description with home screen site-meta position */
+/* ↓ Project pages: align "Phoebe Crookes" top with gallery image top */
 .project-page .site-header {
+  margin-top: 0;
   margin-bottom: 8px;
+}
+
+.project-page .site-title {
+  margin: 0;
 }
 
 .site-title {
@@ -393,7 +398,7 @@ body.project-page .image-overlay iframe {
 
 /* Project pages only: carousel – one image at a time, click to advance, fits in viewport */
 body.project-page .project-content {
-  padding-top: 8px;
+  padding-top: 0;
   position: relative;
   /* ↓ Gap between image and caption text — change this value */
   --gallery-caption-gap: 8px;
@@ -557,6 +562,33 @@ body.project-page .layout {
     grid-auto-flow: row;
     grid-auto-columns: unset;
     justify-items: center;
+  }
+
+  body.project-page,
+  body.project-page .page {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  body.project-page .layout {
+    height: auto;
+  }
+
+  body.project-page .project-gallery {
+    height: 55dvh;
+    min-height: 260px;
+    max-height: none;
+  }
+
+  body.project-page .project-gallery .gallery-cell {
+    justify-content: center;
+  }
+
+  body.project-page .project-gallery .gallery-cell img,
+  body.project-page .project-gallery .gallery-cell video {
+    object-position: center top;
   }
 }
 
