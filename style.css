@@ -26,6 +26,7 @@
   --text-column-width: 360px;
   --layout-column-gap: 450px;
   --gallery-height-offset: 45px;
+  --gallery-chrome-height: 36px;
 }
 
 
@@ -255,14 +256,25 @@ body.home .project-meta {
   border-radius: 0px;
   background: #ddd;
   min-width: 0;
+  display: block;
 }
 
-.project-image-wrap img {
+.project-image-wrap img,
+.project-image-wrap video {
   display: block;
   width: 100%;
   max-width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+body.home .project-card {
+  pointer-events: auto;
+}
+
+body.home .project-image-wrap img,
+body.home .project-image-wrap video {
+  pointer-events: auto;
 }
 
 .project-meta h2 {
@@ -405,46 +417,13 @@ body.project-page .gallery-caption-display {
   pointer-events: none;
 }
 
-body.project-page .gallery-nav {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 11;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transform: translateX(-100%);
-  pointer-events: auto;
-}
-
-body.project-page .gallery-nav button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 2px 4px;
-  border: 0;
-  background-color: #ffffff;
-  cursor: pointer;
-  font: inherit;
-  line-height: 1;
-}
-
-body.project-page .gallery-nav button svg {
-  display: block;
-}
-
-body.project-page .gallery-nav-prev svg {
-  transform: scaleX(-1);
-}
-
 body.project-page .project-gallery {
   position: relative;
   width: 100%;
-  height: calc(100vh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
-  height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
-  max-height: calc(100vh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
-  max-height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset));
+  height: calc(100vh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset) - var(--gallery-chrome-height));
+  height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset) - var(--gallery-chrome-height));
+  max-height: calc(100vh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset) - var(--gallery-chrome-height));
+  max-height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y) - var(--gallery-height-offset) - var(--gallery-chrome-height));
   display: block;
   column-count: unset;
   margin-bottom: 0;
@@ -480,7 +459,7 @@ body.project-page .project-gallery .gallery-cell {
 
 body.project-page .project-gallery .gallery-cell.current {
   opacity: 1;
-  pointer-events: auto;
+  pointer-events: none;
   cursor: default;
 }
 
@@ -517,14 +496,10 @@ body.project-page .project-gallery .gallery-vimeo iframe {
   pointer-events: none;
 }
 
-body.project-page .project-gallery .gallery-cell.current .gallery-vimeo iframe {
-  pointer-events: auto;
-}
-
 body.project-page .project-gallery .gallery-cell.current img,
 body.project-page .project-gallery .gallery-cell.current video,
 body.project-page .project-gallery .gallery-cell.current .gallery-vimeo {
-  cursor: default;
+  pointer-events: auto;
 }
 
 /* Align project-content top with left column header */
