@@ -591,40 +591,74 @@ body.project-page .layout {
 
   body.project-page .project-gallery {
     height: auto;
-    min-height: 200px;
+    min-height: 0;
+    max-height: none;
   }
 
-  body.project-page .project-gallery .gallery-cell {
-    position: absolute;
-    top: 0;
-    left: 0;
+  body.project-page .project-gallery.is-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  body.project-page .project-gallery.is-scroll .gallery-cell {
+    position: relative;
+    top: auto;
+    left: auto;
     width: 100%;
     height: auto;
-    justify-content: center;
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     container-type: normal;
+    transition: none;
   }
 
-  body.project-page .project-gallery .gallery-cell.current {
-    position: relative;
-    height: auto;
-  }
-
-  body.project-page .project-gallery .gallery-cell img,
-  body.project-page .project-gallery .gallery-cell video {
+  body.project-page .project-gallery.is-scroll .gallery-cell img,
+  body.project-page .project-gallery.is-scroll .gallery-cell video {
     width: 100%;
     height: auto;
     max-width: 100%;
     max-height: none;
     object-fit: contain;
     object-position: center top;
+    pointer-events: none;
   }
 
-  body.project-page .project-gallery .gallery-vimeo {
+  body.project-page .project-gallery.is-scroll .gallery-vimeo {
     width: 100%;
     max-width: 100%;
     aspect-ratio: 16 / 9;
     height: auto;
     align-self: stretch;
+    pointer-events: auto;
+  }
+
+  body.project-page .project-gallery.is-scroll .gallery-vimeo iframe {
+    pointer-events: auto;
+  }
+
+  body.project-page .project-gallery.is-scroll .gallery-cell .gallery-caption {
+    display: block;
+    order: 2;
+    margin: 8px 0 0;
+    padding: 2px 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    background-color: #ffffff;
+  }
+
+  body.project-page .project-gallery.is-scroll .gallery-cell .gallery-caption:empty {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.project-page .project-gallery.is-scroll .gallery-caption-display {
+    display: none !important;
   }
 
   body.project-page .about p:last-of-type {
@@ -632,15 +666,18 @@ body.project-page .layout {
   }
 
   body.project-page .mobile-project-nav {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
     margin-top: 24px;
     font-size: 13px;
     line-height: 1.4;
   }
 
   body.project-page .mobile-project-nav a {
-    display: inline-block;
-    margin: 0 0 0.5em;
+    display: block;
+    margin: 0;
     background-color: #ffffff;
     padding: 2px 4px;
   }
