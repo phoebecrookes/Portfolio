@@ -184,10 +184,13 @@
   }
 
   function syncCellMedia(cells) {
+    var gallery = cells[0] && cells[0].closest('.project-gallery');
+    var scrollMode = gallery && gallery.classList.contains('is-scroll');
+
     cells.forEach(function(cell) {
       var video = cell.querySelector('video');
       if (video) {
-        if (cell.classList.contains('current')) {
+        if (scrollMode || cell.classList.contains('current')) {
           video.play().catch(function() {});
         } else {
           video.pause();
@@ -201,7 +204,7 @@
       var player = getVimeoPlayer(vimeoIframe);
       if (!player) return;
 
-      if (cell.classList.contains('current')) {
+      if (scrollMode || cell.classList.contains('current')) {
         player.play().catch(function() {});
       } else {
         player.pause().catch(function() {});
@@ -243,6 +246,30 @@
       projectContent.appendChild(mobileNav);
     }
 
+    function isMobileGallery() {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    function setGalleryMode() {
+      if (!isProjectPage) return;
+
+      if (isMobileGallery()) {
+        gallery.classList.add('is-scroll');
+        if (captionDisplay) captionDisplay.hidden = true;
+      } else {
+        gallery.classList.remove('is-scroll');
+        var idx = getCurrentIndex();
+        if (idx < 0) idx = 0;
+        cells.forEach(function(cell, i) {
+          cell.classList.toggle('current', i === idx);
+        });
+        updateCaption();
+      }
+
+      syncCellMedia(cells);
+      bindCurrentMediaInteraction();
+    }
+
     function getCurrentIndex() {
       var current = gallery.querySelector('.gallery-cell.current');
       return Array.prototype.indexOf.call(cells, current);
@@ -255,6 +282,7 @@
     }
 
     function positionCaption() {
+      if (gallery.classList.contains('is-scroll')) return;
       if (!captionDisplay || !projectContent) return;
 
       var current = gallery.querySelector('.gallery-cell.current');
@@ -286,6 +314,10 @@
 
     function updateCaption() {
       if (!captionDisplay) return;
+      if (gallery.classList.contains('is-scroll')) {
+        captionDisplay.hidden = true;
+        return;
+      }
       var current = gallery.querySelector('.gallery-cell.current');
       var caption = current && current.querySelector('.gallery-caption');
       var text = caption ? caption.innerHTML.trim() : '';
@@ -336,11 +368,18 @@
 
     gallery.querySelectorAll('img, video, .gallery-vimeo').forEach(bindMediaReady);
 
-    window.addEventListener('resize', positionGalleryChrome);
+    window.addEventListener('resize', function() {
+      setGalleryMode();
+      positionGalleryChrome();
+    });
     window.addEventListener('scroll', positionGalleryChrome, { passive: true });
 
-    cells[0].classList.add('current');
-    syncCellMedia(cells);
+    if (isProjectPage) {
+      setGalleryMode();
+    } else {
+      cells[0].classList.add('current');
+      syncCellMedia(cells);
+    }
 
     if (gallery.querySelector('iframe[src*="vimeo.com"]') && window.Vimeo) {
       gallery.querySelectorAll('.gallery-vimeo iframe, iframe[src*="player.vimeo.com"]').forEach(function(iframe) {
@@ -384,6 +423,8 @@
     }
 
     function bindCurrentMediaInteraction() {
+      if (gallery.classList.contains('is-scroll')) return;
+
       var current = gallery.querySelector('.gallery-cell.current');
       if (!current) return;
 
@@ -420,6 +461,8 @@
     }
 
     function goToIndex(idx) {
+      if (gallery.classList.contains('is-scroll')) return;
+
       var current = gallery.querySelector('.gallery-cell.current');
       if (!current || !cells[idx]) return;
 
