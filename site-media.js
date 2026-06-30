@@ -234,6 +234,109 @@
     var CURSOR_NEXT = 'url("cursor-arrow.svg") 6 18, pointer';
     var CURSOR_PREV = 'url("cursor-arrow-left.svg") 42 18, pointer';
     var navigationLock = false;
+    var lastPointer = { x: 0, y: 0 };
+
+    function getCurrentMedia() {
+      var current = gallery.querySelector('.gallery-cell.current');
+      return current && current.querySelector('img, video, .gallery-vimeo');
+    }
+
+    function pointInMedia(media, clientX, clientY) {
+      if (!media) return false;
+      var rect = media.getBoundingClientRect();
+      return clientX >= rect.left && clientX <= rect.right &&
+        clientY >= rect.top && clientY <= rect.bottom;
+    }
+
+    function clearNavCursor() {
+      gallery.style.cursor = '';
+      gallery.querySelectorAll('img, video, .gallery-vimeo').forEach(function(media) {
+        media.style.cursor = '';
+      });
+    }
+
+    function updateNavCursor(clientX, clientY) {
+      if (!canNavigate || gallery.classList.contains('is-scroll')) {
+        clearNavCursor();
+        return;
+      }
+
+      var media = getCurrentMedia();
+      clearNavCursor();
+
+      if (!media || !pointInMedia(media, clientX, clientY)) return;
+
+      var rect = media.getBoundingClientRect();
+      var isLeft = (clientX - rect.left) < rect.width / 2;
+      media.style.cursor = isLeft ? CURSOR_PREV : CURSOR_NEXT;
+    }
+
+    function bindMediaOverlay() {
+      cells.forEach(function(cell) {
+        cell.querySelectorAll('img, video, .gallery-vimeo').forEach(function(media) {
+          if (media._overlayBound) return;
+          media._overlayBound = true;
+
+          media.addEventListener('mouseenter', function() {
+            if (!cell.classList.contains('current')) return;
+            showOverlayWithCurrent();
+          });
+
+          media.addEventListener('mouseleave', function() {
+            if (!cell.classList.contains('current')) return;
+            if (navigationLock) return;
+            hideOverlay();
+          });
+        });
+      });
+    }
+
+    function bindGalleryNavigation() {
+      if (gallery._galleryNavBound) return;
+      gallery._galleryNavBound = true;
+
+      gallery.addEventListener('mousemove', function(e) {
+        lastPointer.x = e.clientX;
+        lastPointer.y = e.clientY;
+        updateNavCursor(e.clientX, e.clientY);
+      });
+
+      gallery.addEventListener('mouseleave', function() {
+        if (navigationLock) return;
+        clearNavCursor();
+        hideOverlay();
+      });
+
+      gallery.addEventListener('click', function(e) {
+        if (!canNavigate || gallery.classList.contains('is-scroll')) return;
+
+        var media = getCurrentMedia();
+        if (!media || !pointInMedia(media, e.clientX, e.clientY)) return;
+
+        e.preventDefault();
+        lastPointer.x = e.clientX;
+        lastPointer.y = e.clientY;
+
+        var rect = media.getBoundingClientRect();
+        var idx = getCurrentIndex();
+        if ((e.clientX - rect.left) < rect.width / 2) {
+          goToIndex((idx - 1 + cells.length) % cells.length);
+        } else {
+          goToIndex((idx + 1) % cells.length);
+        }
+      });
+    }
+
+    function refreshPointerAfterNav() {
+      updateNavCursor(lastPointer.x, lastPointer.y);
+      requestAnimationFrame(function() {
+        updateNavCursor(lastPointer.x, lastPointer.y);
+        requestAnimationFrame(function() {
+          updateNavCursor(lastPointer.x, lastPointer.y);
+          navigationLock = false;
+        });
+      });
+    }
 
     if (isProjectPage && projectContent && !projectContent.querySelector('.mobile-project-nav')) {
       var mobileNav = document.createElement('nav');
@@ -267,7 +370,11 @@
       }
 
       syncCellMedia(cells);
-      bindCurrentMediaInteraction();
+      if (isMobileGallery()) {
+        clearNavCursor();
+      } else {
+        updateNavCursor(lastPointer.x, lastPointer.y);
+      }
     }
 
     function getCurrentIndex() {
@@ -422,44 +529,6 @@
       overlay.setAttribute('aria-hidden', 'true');
     }
 
-    function bindCurrentMediaInteraction() {
-      if (gallery.classList.contains('is-scroll')) return;
-
-      var current = gallery.querySelector('.gallery-cell.current');
-      if (!current) return;
-
-      current.querySelectorAll('img, video, .gallery-vimeo').forEach(function(media) {
-        if (media._mediaInteractionBound) return;
-        media._mediaInteractionBound = true;
-
-        media.addEventListener('mouseenter', showOverlayWithCurrent);
-        media.addEventListener('mouseleave', function() {
-          if (navigationLock) return;
-          hideOverlay();
-          media.style.cursor = '';
-        });
-
-        if (!canNavigate) return;
-
-        media.addEventListener('mousemove', function(e) {
-          var rect = media.getBoundingClientRect();
-          var isLeft = (e.clientX - rect.left) < rect.width / 2;
-          media.style.cursor = isLeft ? CURSOR_PREV : CURSOR_NEXT;
-        });
-
-        media.addEventListener('click', function(e) {
-          e.preventDefault();
-          var rect = media.getBoundingClientRect();
-          var idx = getCurrentIndex();
-          if ((e.clientX - rect.left) < rect.width / 2) {
-            goToIndex((idx - 1 + cells.length) % cells.length);
-          } else {
-            goToIndex((idx + 1) % cells.length);
-          }
-        });
-      });
-    }
-
     function goToIndex(idx) {
       if (gallery.classList.contains('is-scroll')) return;
 
@@ -473,25 +542,16 @@
       cells[idx].classList.add('current');
       syncCellMedia(cells);
       updateCaption();
-      bindCurrentMediaInteraction();
 
       if (keepOverlay) {
         showOverlayWithCurrent();
-      } else {
-        requestAnimationFrame(function() {
-          var media = cells[idx].querySelector('img, video, .gallery-vimeo');
-          if (media && media.matches(':hover')) {
-            showOverlayWithCurrent();
-          }
-        });
       }
 
-      requestAnimationFrame(function() {
-        navigationLock = false;
-      });
+      refreshPointerAfterNav();
     }
 
-    bindCurrentMediaInteraction();
+    bindMediaOverlay();
+    bindGalleryNavigation();
   }
 
   function initHomeHover() {
