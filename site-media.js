@@ -35,19 +35,6 @@
     return null;
   }
 
-  function extractGalleryMedia(html) {
-    var doc = new DOMParser().parseFromString(html, 'text/html');
-    var cells = doc.querySelectorAll('.project-gallery .gallery-cell');
-    var media = [];
-
-    cells.forEach(function(cell) {
-      var item = getMediaFromCell(cell);
-      if (item) media.push(item);
-    });
-
-    return media;
-  }
-
   var overlayVideoPool = {};
 
   function warmOverlayVideo(overlayEl, src) {
@@ -55,10 +42,11 @@
 
     if (!overlayVideoPool[src]) {
       var video = document.createElement('video');
-      video.setAttribute('muted', '');
-      video.setAttribute('loop', '');
-      video.setAttribute('playsinline', '');
-      video.setAttribute('preload', 'auto');
+      video.muted = true;
+      video.defaultMuted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = 'auto';
       video.src = src;
       video.style.display = 'none';
       overlayEl.appendChild(video);
@@ -80,9 +68,13 @@
   function playOverlayVideo(video) {
     if (!video) return;
 
+    video.muted = true;
+
     function start() {
-      video.currentTime = 0;
-      video.play().catch(function() {});
+      var playPromise = video.play();
+      if (playPromise && playPromise.catch) {
+        playPromise.catch(function() {});
+      }
     }
 
     if (video.readyState >= 2) {
@@ -113,12 +105,6 @@
     }
     var image = new Image();
     image.src = item.src;
-  }
-
-  function preloadMediaList(media, overlayEl) {
-    media.forEach(function(item) {
-      preloadMediaItem(item, overlayEl);
-    });
   }
 
   function setupOverlay(overlayEl) {
@@ -560,54 +546,7 @@
 
     var overlayMedia = setupOverlay(overlay);
     var cards = document.querySelectorAll('.project-card');
-    var mediaCache = {};
-    var cycleTimer = null;
     var activeCard = null;
-    var CYCLE_MS = 1100;
-
-    function loadProjectMedia(href) {
-      if (mediaCache[href]) {
-        preloadMediaList(mediaCache[href], overlay);
-        return Promise.resolve(mediaCache[href]);
-      }
-      return fetch(href)
-        .then(function(res) { return res.text(); })
-        .then(function(html) {
-          var media = extractGalleryMedia(html);
-          mediaCache[href] = media;
-          preloadMediaList(media, overlay);
-          return media;
-        })
-        .catch(function() {
-          mediaCache[href] = [];
-          return [];
-        });
-    }
-
-    function stopCycle() {
-      if (cycleTimer) {
-        clearInterval(cycleTimer);
-        cycleTimer = null;
-      }
-    }
-
-    function startCycle(card, media, startIndex) {
-      stopCycle();
-      if (!media.length) return;
-
-      var idx = startIndex || 0;
-      overlayMedia.show(media[idx]);
-      overlay.classList.add('is-visible');
-      overlay.setAttribute('aria-hidden', 'false');
-
-      if (media.length <= 1) return;
-
-      cycleTimer = setInterval(function() {
-        if (activeCard !== card) return;
-        idx = (idx + 1) % media.length;
-        overlayMedia.show(media[idx]);
-      }, CYCLE_MS);
-    }
 
     function thumbFromCard(card) {
       var wrap = card.querySelector('.project-image-wrap');
@@ -627,39 +566,12 @@
       return { type: 'image', src: thumb.src, alt: thumb.alt || '' };
     }
 
-    function mediaSrcKey(item) {
-      if (!item || !item.src) return '';
-      try {
-        return new URL(item.src, window.location.href).href;
-      } catch (error) {
-        return item.src;
-      }
-    }
-
-    function isSameMedia(a, b) {
-      if (!a || !b) return false;
-      return a.type === b.type && mediaSrcKey(a) === mediaSrcKey(b);
-    }
-
-    function buildHoverMedia(thumb, galleryMedia) {
-      var media = [];
-      if (thumb) media.push(thumb);
-
-      (galleryMedia || []).forEach(function(item) {
-        if (media.some(function(existing) { return isSameMedia(existing, item); })) return;
-        media.push(item);
-      });
-
-      return media;
-    }
-
     cards.forEach(function(card) {
-      var href = card.getAttribute('href');
-      if (href) loadProjectMedia(href);
-
       var thumb = thumbFromCard(card);
       if (thumb && thumb.type === 'video') {
         warmOverlayVideo(overlay, thumb.src);
+      } else if (thumb) {
+        preloadMediaItem(thumb, overlay);
       }
 
       var wrap = card.querySelector('.project-image-wrap');
@@ -668,31 +580,16 @@
       function onImageEnter() {
         activeCard = card;
         var thumbItem = thumbFromCard(card);
+        if (!thumbItem) return;
 
-        if (!href) {
-          startCycle(card, buildHoverMedia(thumbItem, []), 0);
-          return;
-        }
-
-        if (mediaCache[href] && mediaCache[href].length) {
-          startCycle(card, buildHoverMedia(thumbItem, mediaCache[href]), 0);
-          return;
-        }
-
-        if (thumbItem) overlayMedia.show(thumbItem);
+        overlayMedia.show(thumbItem);
         overlay.classList.add('is-visible');
         overlay.setAttribute('aria-hidden', 'false');
-
-        loadProjectMedia(href).then(function(media) {
-          if (activeCard !== card) return;
-          startCycle(card, buildHoverMedia(thumbItem, media), 0);
-        });
       }
 
       function onImageLeave() {
         if (activeCard !== card) return;
         activeCard = null;
-        stopCycle();
         overlayMedia.hide();
         overlay.classList.remove('is-visible');
         overlay.setAttribute('aria-hidden', 'true');
