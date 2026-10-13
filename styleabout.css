@@ -20,7 +20,7 @@
   /* ↓ Page margins — keep in sync with style.css */
   --page-padding-y: clamp(8px, 2vw, 16px);
   --page-padding-x: clamp(10px, 2.5vw, 24px);
-  --text-column-width: 360px;
+  --text-column-width: 450px;
   --layout-column-gap: 450px;
   --gallery-height-offset: 45px;
 }
@@ -66,9 +66,11 @@ a:hover {
 
 body.about-page,
 body.about-page .page {
-  overflow: hidden;
-  height: 100vh;
-  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .layout {
@@ -91,8 +93,6 @@ body.about-page .layout {
   min-width: 0;
   overflow-wrap: break-word;
   z-index: 2;
-  max-height: calc(100dvh - var(--page-padding-y) - var(--page-padding-y));
-  overflow-y: auto;
 }
 
 .project-content {
@@ -140,6 +140,8 @@ body.about-page .project-gallery .gallery-cell {
 
 body.about-page .project-gallery .gallery-cell img,
 body.about-page .project-gallery .gallery-cell video {
+  max-width: 55%;
+  max-height: 42vh;
   pointer-events: none;
 }
 
@@ -187,7 +189,7 @@ body.about-page .left {
 }
 
 .site-header {
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .site-header p {
@@ -228,11 +230,7 @@ body.about-page .left {
 .about h1 {
   font-size: 13px;
   font-weight: 400;
-  margin: 0 0 0em;
-}
-
-.about h1:not(:first-child) {
-  margin-top: 1.5em;
+  margin: 1.5em 0 0;
 }
 
 .about p {
@@ -241,6 +239,53 @@ body.about-page .left {
 
 .about p:last-child {
   margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+
+  .left {
+    position: static;
+  }
+
+  body.about-page,
+  body.about-page .page {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  body.about-page .layout {
+    height: auto;
+  }
+
+  body.about-page .project-gallery {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  body.about-page .project-gallery .gallery-cell {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+  }
+
+  body.about-page .project-gallery .gallery-cell img,
+  body.about-page .project-gallery .gallery-cell video {
+    width: auto;
+    height: auto;
+    max-width: min(70%, 280px);
+    max-height: 42vh;
+    object-fit: contain;
+    object-position: center top;
+  }
 }
 
 @media (max-width: 480px) {
